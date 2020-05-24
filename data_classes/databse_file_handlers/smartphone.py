@@ -1,4 +1,3 @@
-import sys
 
 class SmartPhone():
     def __init__(self, brand, model, price, made_in, dealer, imei_code, stores=[]):
@@ -11,20 +10,16 @@ class SmartPhone():
         self.imei_code = imei_code
         self.stores = stores
 
-    #methods for SmartPhone object comparison
+    # methods for SmartPhone object comparison
     def __eq__(self, other):
         return self.imei_code == other.imei_code
 
     def __gt__(self, other):
-        return self.imei_code > other.imei_code    
+        return self.imei_code > other.imei_code
 
     def __ge__(self, other):
         return self.imei_code >= other.imei_code
-    
+
     def __str__(self):
-        return str({"brand":self.brand, "model":self.model, "price":self.price, "made_in":self.made_in, "dealer":self.dealer, "IMEI_CODE":self.imei_code, "stores":self.stores})
-
-        
-
-
+        return str({"brand": self.brand, "model": self.model, "price": self.price, "made_in": self.made_in, "dealer": self.dealer, "IMEI_CODE": self.imei_code, "stores": self.stores})
 

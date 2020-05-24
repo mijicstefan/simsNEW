@@ -1,8 +1,6 @@
-
 from data_classes.databse_file_handlers.data_handler import DataHandler
 import json
 import pickle
-from data_classes.databse_file_handlers.smartphone import SmartPhone
 
 
 class SerialFileHandler(DataHandler):
@@ -10,24 +8,25 @@ class SerialFileHandler(DataHandler):
         super().__init__()
         self.filepath = filepath
         self.meta_filepath = meta_filepath
-        self.data = None
-        self.metadata = {}
+        self.data = []
+        self.metadata = []
         self.load_data()
 
     def load_data(self):
         # učitavanje podataka
         print("usao u load data.")
+        # učitavanje metapodataka
+        with open(self.meta_filepath) as meta_file:
+            self.metadata = json.load(meta_file)
+            print("ocitao metafile")
         try:
             with open(self.filepath, 'rb') as dfile:
                 print("Otvorio filepath za main")
                 # koristimo pickle za deserijalizaciju podataka
                 self.data = pickle.load(dfile)
                 print("DODJI DO OVDJE")
-        except (FileNotFoundError, ModuleNotFoundError) as e:
+        except (FileNotFoundError) as e:
             print("Ne postoji File. Error message: {}".format(e))
-        # učitavanje metapodataka
-        with open(self.meta_filepath) as meta_file:
-            self.metadata = json.load(meta_file)
 
     def get_one(self, id):
         for d in self.data:  # za serijsku datoteku moramo proći linearno kroz sve slogove kada tražimo
