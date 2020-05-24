@@ -1,7 +1,7 @@
 
 from data_classes.databse_file_handlers.data_handler import DataHandler
 import json
-import pickle 
+import pickle
 from data_classes.databse_file_handlers.smartphone import SmartPhone
 
 
@@ -13,25 +13,26 @@ class SerialFileHandler(DataHandler):
         self.data = None
         self.metadata = {}
         self.load_data()
-    
+
     def load_data(self):
-        #učitavanje podataka
+        # učitavanje podataka
         print("usao u load data.")
         try:
             with open(self.filepath, 'rb') as dfile:
                 print("Otvorio filepath za main")
-                self.data = pickle.load(dfile) #koristimo pickle za deserijalizaciju podataka
+                # koristimo pickle za deserijalizaciju podataka
+                self.data = pickle.load(dfile)
                 print("DODJI DO OVDJE")
-        except FileNotFoundError:
-            print("Ne postoji File")
-        #učitavanje metapodataka   
+        except (FileNotFoundError, ModuleNotFoundError) as e:
+            print("Ne postoji File. Error message: {}".format(e))
+        # učitavanje metapodataka
         with open(self.meta_filepath) as meta_file:
-            self.metadata = json.load(meta_file)  
-
+            self.metadata = json.load(meta_file)
 
     def get_one(self, id):
-        for d in self.data: #za serijsku datoteku moramo proći linearno kroz sve slogove kada tražimo
-            if getattr(d, (self.metadata["key"])) == id: #ako se poklopi ključna kolona, koju dobavljamo iz metapodataka sa zadatim podatkom
+        for d in self.data:  # za serijsku datoteku moramo proći linearno kroz sve slogove kada tražimo
+            # ako se poklopi ključna kolona, koju dobavljamo iz metapodataka sa zadatim podatkom
+            if getattr(d, (self.metadata["key"])) == id:
                 return d
         return None
 
@@ -48,12 +49,12 @@ class SerialFileHandler(DataHandler):
             if getattr(d, (self.metadata["key"])) == id:
                 index_elementa = self.data.index(d)
                 self.data[index_elementa] = new_value
-        self.save_to_file()  
-    
+        self.save_to_file()
+
     def save_to_file(self):
         with open(self.filepath, "wb") as sfile:
             pickle.dump(self.data, sfile)
-                        
+
     def delete_one(self, id):
         for d in self.data:
             print(str(self.data))
@@ -69,8 +70,8 @@ class SerialFileHandler(DataHandler):
         for value in new_values:
             self.data.append(value)
         self.save_to_file()
-        
-    #TODO implementirati edit, delete, insert_many (za ubacivanje više objekata odjednom, preko neke kolekcije)
-    #TODO kreirati funkciju za ispis svih studenata, sa predmetima i nastavnicima, kao što piše u zadatku
+
+    # TODO implementirati edit, delete, insert_many (za ubacivanje više objekata odjednom, preko neke kolekcije)
+    # TODO kreirati funkciju za ispis svih studenata, sa predmetima i nastavnicima, kao što piše u zadatku
     # ta funkcija ne treba da bude unutar ove klase, nego da se koriste file handleri za sva 3 entiteta da bi se ovo postiglo
     # u odvojenoj skripti

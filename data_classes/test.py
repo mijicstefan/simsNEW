@@ -25,9 +25,9 @@ for d in data:
     print(str(d))
 
 
-print(file_name)
-with open("data/"+file_name, 'wb') as data_file:
-    pickle.dump(linked_data_paths, data_file) #koristimo pickle da bismo serijalizovali u binarnu datoteku
+# print(file_name)
+# with open("data/"+file_name, 'wb') as data_file:
+#     pickle.dump(linked_data_paths, data_file) #koristimo pickle da bismo serijalizovali u binarnu datoteku
 
 
 
