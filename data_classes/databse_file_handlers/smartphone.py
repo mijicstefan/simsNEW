@@ -20,9 +20,11 @@ class SmartPhone():
 
     def __ge__(self, other):
         return self.imei_code >= other.imei_code
+    
+    def __str__(self):
+        return str({"brand":self.brand, "model":self.model, "price":self.price, "made_in":self.made_in, "dealer":self.dealer, "IMEI_CODE":self.imei_code, "stores":self.stores})
 
-
-print(sys.path)     
+        
 
 
 

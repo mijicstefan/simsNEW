@@ -1,7 +1,8 @@
-from PySide2.QtWidgets import QMainWindow, QApplication, QAction, QPushButton, QToolBar, QSplashScreen, QDockWidget, QFileSystemModel, QTreeView, QStatusBar
+from PySide2.QtWidgets import QMainWindow, QApplication, QAction, QPushButton, QToolBar, QSplashScreen, QDockWidget, QFileSystemModel, QTreeView, QStatusBar, QLabel
 from PySide2.QtGui import QKeySequence, QPixmap, QIcon
 from PySide2.QtCore import Qt, QDir
 import sys
+import os
 
 from customWidgets.workspace_widget import WorkSpaceWidget
 
@@ -11,6 +12,10 @@ class MainWindow(QMainWindow):
         #SET => App Icon
         self.icon = QIcon("img/iconXLNK.png")
         #End
+        
+        self.tree_view = None
+        self.file_system_model = None
+
 
         #SET => Window Icon
         self.setWindowIcon(self.icon)
@@ -52,19 +57,26 @@ class MainWindow(QMainWindow):
         #Dock Widget
         dock_widget = QDockWidget("EXPLORER", self)
         #File System Model
-        file_system_model = QFileSystemModel()
-        file_system_model.setRootPath(QDir.currentPath())
+        self.file_system_model = QFileSystemModel()
+        self.file_system_model.setRootPath(QDir.currentPath())
         #SET => Tree View MOdel
-        tree_view = QTreeView()
-        tree_view.setModel(file_system_model)
-        tree_view.setRootIndex(
-            file_system_model.index(QDir.currentPath()))
-        tree_view.clicked.connect(self.file_clicked_handler)  
-        dock_widget.setWidget(tree_view)
+        self.tree_view = QTreeView()
+        self.tree_view.setModel(self.file_system_model)
+        self.tree_view.setRootIndex(
+            self.file_system_model.index(QDir.currentPath()))
+        self.tree_view.clicked.connect(self.file_clicked_handler)  
+        dock_widget.setWidget(self.tree_view)
         dock_widget.setFloating(False)
-
-        
         self.addDockWidget(Qt.LeftDockWidgetArea, dock_widget)
+
+        #QLabel
+        qlabel = QLabel(self)
+        qlabel.setText("Welcome to XLNK.")
+        
+        #Central Widget
+        self.clicked_file = None
+        
+        self.setCentralWidget(qlabel)
         
         self.showMaximized()
 
@@ -73,11 +85,20 @@ class MainWindow(QMainWindow):
     def delete_table_row_tb(self):
         print("Ugraditi funkciju za brisanje reda iz tabele.")
 
-    def file_clicked_handler(self):
+    def file_clicked_handler(self, index):
+        index = self.tree_view.currentIndex()
+        file_clicked_param = os.path.basename(self.file_system_model.filePath(index))
+        self.clicked_file = file_clicked_param
         self.status_bar = QStatusBar(self)
-        self.status_bar.showMessage("Some file is clicked", 3000)
+        self.status_bar.showMessage("File Selected: {}".format(file_clicked_param), 3000)
         self.setStatusBar(self.status_bar)
-        #Central Widget
-        workspace_widget = WorkSpaceWidget(self)
-        self.setCentralWidget(workspace_widget)
+        self.workspace_widget = WorkSpaceWidget(self, self.clicked_file)
+        self.setCentralWidget(self.workspace_widget)
+        
+
+           
+            
+        
+
+        
 

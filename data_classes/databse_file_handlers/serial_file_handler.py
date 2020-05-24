@@ -1,22 +1,27 @@
 
-from classes.databse_file_handlers.data_handler import DataHandler
+from data_classes.databse_file_handlers.data_handler import DataHandler
 import json
-import pickle #koristimo pickle za serijalizaciju i deserijalizaciju objekata
+import pickle 
+from data_classes.databse_file_handlers.smartphone import SmartPhone
+
 
 class SerialFileHandler(DataHandler):
     def __init__(self, filepath, meta_filepath):
         super().__init__()
         self.filepath = filepath
         self.meta_filepath = meta_filepath
-        self.data = []
+        self.data = None
         self.metadata = {}
         self.load_data()
     
     def load_data(self):
         #učitavanje podataka
+        print("usao u load data.")
         try:
-            with open((self.filepath), 'rb') as dfile:
+            with open(self.filepath, 'rb') as dfile:
+                print("Otvorio filepath za main")
                 self.data = pickle.load(dfile) #koristimo pickle za deserijalizaciju podataka
+                print("DODJI DO OVDJE")
         except FileNotFoundError:
             print("Ne postoji File")
         #učitavanje metapodataka   

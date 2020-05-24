@@ -1,4 +1,4 @@
-from inventory.smartphone import SmartPhone
+from databse_file_handlers.smartphone import SmartPhone
 from random import randint
 import pickle
 
@@ -17,7 +17,12 @@ data.append(smart_phone3)
 data.append(smart_phone4)
 data.append(smart_phone5)
 
+
+
 file_name = type(smart_phone1).__name__.lower()
+
+for d in data:
+    print(str(d))
 
 
 print(file_name)

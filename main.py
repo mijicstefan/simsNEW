@@ -13,4 +13,4 @@ if __name__ == "__main__":
     time.sleep(1)
     window = MainWindow()
     app.exec_()
-    app.exit()
+    app.exit()  
