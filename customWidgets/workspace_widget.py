@@ -1,4 +1,4 @@
-from PySide2.QtWidgets import QMainWindow, QApplication, QAction, QPushButton, QToolBar, QSplashScreen, QDockWidget, QFileSystemModel, QTreeView, QStatusBar, QWidget, QVBoxLayout, QTabWidget, QTableView, QTableWidget, QTableWidgetItem
+from PySide2.QtWidgets import QMainWindow, QApplication, QAction, QPushButton, QToolBar, QSplashScreen, QDockWidget, QFileSystemModel, QTreeView, QStatusBar, QWidget, QVBoxLayout, QTabWidget, QTableView, QTableWidget, QTableWidgetItem, QAbstractItemView
 from PySide2.QtGui import QKeySequence, QPixmap, QIcon
 from PySide2.QtCore import Qt, QDir
 import sys
@@ -9,39 +9,34 @@ from customWidgets.models.abstract_table_model import AbstractTableModel
 class WorkSpaceWidget(QWidget):
     def __init__(self, parent, file_clicked):
         super().__init__(parent)
-        
+        self.main_layout = QVBoxLayout()
+        self.setLayout(self.main_layout)
         self.file_clicked = file_clicked
         self.abstract_table_model = AbstractTableModel(self.file_clicked)
-        # self.print_file_clicked()
-        self.main_layout = QVBoxLayout()
+        self.database_type = self.abstract_table_model.database_type
         self.create_tab_widget()
-        # self.create_table(5,5)
-        # self.tab_widget.addTab(self.table_widget,QIcon("img/iconXLNK.png"), "Widget Name")
+        self.check_database_type_and_run()
+        self.tab_widget.addTab(self.main_table, QIcon(
+            "img/iconXLNK.png"), self.file_clicked)
+        self.main_layout.addWidget(self.tab_widget)
 
+    def check_database_type_and_run(self):
+        if self.database_type == "serial" or self.database_type == "sequential":
+            self.create_table()
+        else:
+            # TODO Obraditi izuzetak.
+            pass
 
-    #radi    
-    def print_file_clicked(self):
-        print(self.file_clicked)
-    #radi
     def create_tab_widget(self):
         self.tab_widget = QTabWidget(self)
         self.tab_widget.setTabsClosable(True)
 
-    def create_table(self, rows, columns):
-        table_widget = QTableWidget(rows, columns, self)
-
-        for i in range(rows):
-            for j in range(columns):
-                table_widget.setItem(i, j, QTableWidgetItem(
-                    "Celija " + str(i) + str(j)))
-        labels = []
-        for i in range(columns):
-            labels.append("Kolona" + str(i))
-        table_widget.setHorizontalHeaderLabels(labels)
-        self.table_widget = table_widget
-        
-
-
-
-
-
+    def create_table(self):
+        self.main_table = QTableView(self.tab_widget)
+        self.main_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.main_table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.main_table.setModel(self.abstract_table_model)
+        # makes responsive tabel sizes
+        max_width = 1620 // self.abstract_table_model.column_number()
+        for width in range(self.abstract_table_model.column_number()):
+            self.main_table.setColumnWidth(width, max_width)
