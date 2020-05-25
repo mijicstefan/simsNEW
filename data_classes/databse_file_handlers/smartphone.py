@@ -23,3 +23,5 @@ class SmartPhone():
     def __str__(self):
         return str({"brand": self.brand, "model": self.model, "price": self.price, "made_in": self.made_in, "dealer": self.dealer, "IMEI_CODE": self.imei_code, "stores": self.stores})
 
+    def make_array(self):
+        return [self.brand, self.model, self.price, self.made_in, self.dealer, self.imei_code]
