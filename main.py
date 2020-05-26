@@ -4,7 +4,6 @@ from customWidgets.main_window import MainWindow
 import sys
 import time
 
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     pixmap = QPixmap("img/xlnk-transparent.png")

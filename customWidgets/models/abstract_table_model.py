@@ -11,6 +11,7 @@ class AbstractTableModel(QAbstractTableModel):
         self.path_to_file_clicked = file_clicked
         self.binary_data_unpacked = None
         self.unbox_data_from_clicked_file()
+        # TODO Srediti i slucaj kada je database type == 'sequentail'
         self.file_handler = SerialFileHandler(
             self.original_data_filepath, self.original_metadata_filepath) if self.database_type == "serial" else 0
         self.data_recieved = self.file_handler.get_all()
@@ -58,7 +59,13 @@ class AbstractTableModel(QAbstractTableModel):
                 return str(data_array[column_header_name])
 
     def flags(self, index):
-        return super().flags(index) | QtCore.Qt.ItemIsEditable  # ili nad bitovima
+        # return super().flags(index) | QtCore.Qt.ItemIsEditable  # ili nad bitovima
+
+        for i in range(len(self.file_handler.metadata[0]["columns"])):
+            if self.file_handler.metadata[0]["columns"][i] == self.file_handler.metadata[0]["key"]:
+                if index.column() == i:
+                    return ~QtCore.Qt.ItemIsEditable
+        return super().flags(index) | QtCore.Qt.ItemIsEditable
 
     def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
         column_count = len(self.file_handler.metadata[0]["columns"])
@@ -73,7 +80,7 @@ class AbstractTableModel(QAbstractTableModel):
         if value == "":
             return False
         for column in range(0, column_count):
-            if index.column() == column and role == QtCore.Qt.EditRole:  # broj indeksa
+            if index.column() == column and role == QtCore.Qt.EditRole:
                 setattr(single_data_element,
                         self.file_handler.metadata[0]["columns"][column], value)
                 self.file_handler.edit(getattr(
