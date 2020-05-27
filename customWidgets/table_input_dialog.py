@@ -19,13 +19,14 @@ from PySide2.QtWidgets import *
 import sys
 
 
-class ArtikalForma(QDialog):
+class InsertOneForm(QDialog):
     # NumGridRows = 3
     # NumButtons = 4
 
     def __init__(self):
-        super(ArtikalForma, self).__init__()
+        super(InsertOneForm, self).__init__()
         self.createFormGroupBox()
+        self.temp_instance = None
 
         # buttonBox = QDialogButtonBox(QDialogButtonBox.Ok)
         # buttonBox.accepted.connect(self.accept)
@@ -36,36 +37,41 @@ class ArtikalForma(QDialog):
         # mainLayout.addWidget(buttonBox)
         self.setLayout(mainLayout)
 
-        self.setWindowTitle("Dodaj artikal")
+        self.setWindowTitle("Insert Data To The Table")
 
     def createFormGroupBox(self):
-        self.formGroupBox = QGroupBox("Dodaj artikal")
+        self.formGroupBox = QGroupBox(
+            "Populate the data needed for this table.")
         layout = QFormLayout()
+        metadata_columns = ["a", "b", "c", "d"]
 
-        naziv = QLineEdit()
-        naziv.setFixedSize(200, 40)
-        layout.addRow(QLabel("Naziv:"), naziv)
-
-        jm = QLineEdit()
-        jm.setFixedSize(200, 40)
-        layout.addRow(QLabel("Jedinica mere:"), jm)
-
-        cena = QSpinBox()
-        cena.setSuffix(" din")
-        cena.setFixedSize(200, 40)
-        cena.setRange(1, 999999999)
-        layout.addRow(QLabel("Cena:"), cena)
-
-        pdv = QSpinBox()
-        pdv.setSuffix(" %")
-        pdv.setFixedSize(200, 40)
-        pdv.setRange(1, 100)
-        layout.addRow(QLabel("PDV:"), pdv)
-
+        collect_button = QPushButton(self, "Enter data")
+        # TODO Srediti dugme i kupljenje podataka iz instanci koje se nalaze u ovom arrayu.
+        self.input_array = []
+        for column in metadata_columns:
+            layout.addRow(QLabel(column),
+                          self.append_instance(self.input_array))
         self.formGroupBox.setLayout(layout)
+        layout.addRow(collect_button)
+
+        collect_button.clicked.connect(self.process_input_fields)
+
+    def append_instance(self, metadata_columns):
+        metadata_columns.append(self.create_QLineEdit_Instance())
+        return self.temp_instance
+
+    def create_QLineEdit_Instance(self):
+        self.temp_instance = QLineEdit()
+        return self.temp_instance
+
+    # TODO Srediti porovjeru i ispravnost podataka, ne smije biti prazan string itd...
+    def process_input_fields(self):
+        print("Button clicked...")
+        for input in range(0, len(self.input_array)):
+            print(self.input_array[input].displayText())
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    dialog = ArtikalForma()
+    dialog = InsertOneForm()
     sys.exit(dialog.exec_())
