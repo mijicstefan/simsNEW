@@ -30,14 +30,14 @@ file_name = type(smart_phone1).__name__.lower()
 #     print(str(d))
 
 
-# print(file_name)
-# with open("bin/"+file_name+"_data", 'wb') as data_file:
-#     # koristimo pickle da bismo serijalizovali u binarnu datoteku
-#     pickle.dump(data, data_file)
+print(file_name)
+with open("data/"+file_name, 'wb') as data_file:
+    # koristimo pickle da bismo serijalizovali u binarnu datoteku
+    pickle.dump(linked_data_paths, data_file)
 
 
-res = None
-with open("bin/smartphone_data", "rb") as f:
-    res = pickle.load(f)
+# res = None
+# with open("bin/smartphone_data", "rb") as f:
+#     res = pickle.load(f)
 
-print(res)
+# print(res)

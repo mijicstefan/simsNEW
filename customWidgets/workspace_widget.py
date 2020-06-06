@@ -4,8 +4,8 @@ from PySide2.QtWidgets import QInputDialog, QLineEdit
 from PySide2.QtCore import Qt, QDir
 import sys
 from customWidgets.models.abstract_table_model import AbstractTableModel
-# from customWidgets.table_input_dialog import TableInputDialog
-# from data_classes.databse_file_handlers.smartphone import SmartPhone
+from customWidgets.table_input_dialog import InsertOneForm
+from data_classes.databse_file_handlers.smartphone import SmartPhone
 
 
 class WorkSpaceWidget(QWidget):
@@ -44,13 +44,29 @@ class WorkSpaceWidget(QWidget):
 
     # TODO srediti dodavnje u tabelu.
     def add_table_row_handler(self):
-        # self.table_input_dialog = TableInputDialog(
-        #     self, self.abstract_table_model.file_handler.metadata[0]["columns"])
-        # if self.table_input_dialog.times_called > 1:
-        #     print("Input dialog already oppened.")
-        # else:
-        #     self.main_layout.addWidget(self.table_input_dialog)
-        pass
+        self.addWindow = InsertOneForm(
+            self.abstract_table_model.file_handler.metadata[0]["columns"], self.check_data)
+        self.main_layout.addWidget(self.addWindow)
+
+        # chekiranje validnosti podataka
+
+    def check_data(self):
+        self.return_data = self.addWindow.final_data
+        self.return_metadata = self.addWindow.metadata_columns
+        not_valid = False
+        i = 0
+        for data in self.return_data:
+            if data.get(self.return_metadata[i]) == "" or data.get(self.return_metadata[i]) == " " or data.get(self.return_metadata[i]) == None:
+                print("Nije uredu")
+                not_valid = True
+            else:
+                print("sve ok")
+            i += 1
+
+        if not_valid != True:
+            self.new_instanc = SmartPhone(self.return_data[0]["brand"], self.return_data[1]["model"], self.return_data[2]["price"],
+                                          self.return_data[3]["made_in"], self.return_data[4]["dealer"], self.return_data[5]["imei_code"], self.return_data[6]["stores"])
+            self.abstract_table_model.file_handler.insert(self.new_instanc)
 
     def check_database_type_and_run(self):
         if self.database_type == "serial" or self.database_type == "sequential":
