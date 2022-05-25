@@ -83,7 +83,7 @@ pycodestyle==2.5.0
 pycparser==2.19
 pyftdi==0.42.2
 pygame==1.9.6
-PyJWT==1.7.1
+PyJWT==2.4.0
 pylint==2.4.4
 pymongo==3.9.0
 PyMySQL==0.9.3
